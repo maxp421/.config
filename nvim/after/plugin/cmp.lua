@@ -1,0 +1,103 @@
+-- -- local lsp_zero = require('lsp-zero')
+-- -- lsp_zero.extend_lspconfig()
+-- --
+-- -- lsp_zero.on_attach(function(client, bufnr)
+-- --   -- see :help lsp-zero-keybindings
+-- --   -- to learn the available actions
+-- --   lsp_zero.default_keymaps({ buffer = bufnr })
+-- -- end)
+-- --
+-- -- -- see :help lsp-zero-guide:integrate-with-mason-nvim
+-- -- -- to learn how to use mason.nvim with lsp-zero
+-- -- require('mason').setup({})
+-- -- require('mason-lspconfig').setup({
+-- --   ensure_installed = {
+-- --     'tsserver',
+-- --     'rust_analyzer',
+-- --     'lua_ls',
+-- --     'eslint',
+-- --     'html',
+-- --     'emmet_ls',
+-- --   },
+-- --   handlers = {
+-- --     lsp_zero.default_setup,
+-- --   }
+-- -- })
+-- --
+-- -- lsp_zero.set_preferences({
+-- --   suggest_lsp_servers = false,
+-- --   sign_icons = {
+-- --     error = 'E',
+-- --     warn = 'W',
+-- --     hint = 'H',
+-- --     info = 'I'
+-- --   }
+-- -- })
+-- --
+-- -- local cmp = require('cmp')
+-- -- local cmp_action = require('lsp-zero').cmp_action()
+-- -- local cmp_select = { behavior = cmp.SelectBehavior.Select }
+-- --
+-- --
+-- -- -- make emmet_ls lower priority so lsp first suggests autocomplete, then emmet snippets
+-- -- -- https://www.reddit.com/r/neovim/comments/woih9n/how_to_set_lsp_autocomplete_priority/
+-- -- -- I had the exact same issue. Changes the order of the sources didn't really work for me since the emmet snippets are coming from the nvim_lsp source not for
+-- -- -- a snippet source and I still want lsp autocompletes to be of a high priority. I just want to de-prioritize emmet stuff.
+-- -- -- What I did was to write a custom comparison function and pass it to cmp's sorting.comparators setting. Like so
+-- --
+-- -- -- local types = require("cmp.types")
+-- -- --
+-- -- -- local function deprioritize_snippet(entry1, entry2)
+-- -- --   if entry1:get_kind() == types.lsp.CompletionItemKind.Snippet then return false end
+-- -- --   if entry2:get_kind() == types.lsp.CompletionItemKind.Snippet then return true end
+-- -- -- end
+-- --
+-- cmp.setup({
+--   snippet = {
+--     -- REQUIRED - you must specify a snippet engine
+--     expand = function(args)
+--       -- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+--       require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+--       -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+--       -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+--     end,
+--   },
+--   window = {
+--     completion = cmp.config.window.bordered(),
+--     -- documentation = cmp.config.window.bordered(),
+--   },
+--   -- sorting = {
+--   --   priority_weight = 2,
+--   --   comparators = {
+--   --     deprioritize_snippet,
+--   --     -- the rest of the comparators are pretty much the defaults
+--   --     cmp.config.compare.offset,
+--   --     cmp.config.compare.exact,
+--   --     cmp.config.compare.scopes,
+--   --     cmp.config.compare.score,
+--   --     cmp.config.compare.recently_used,
+--   --     cmp.config.compare.locality,
+--   --     cmp.config.compare.kind,
+--   --     cmp.config.compare.sort_text,
+--   --     cmp.config.compare.length,
+--   --     cmp.config.compare.order,
+--   --   },
+--   -- },
+--   mapping = lsp_zero.defaults.cmp_mappings({
+--     ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
+--     ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
+--     ['<CR>'] = cmp.mapping.confirm({ select = true }),
+--     ["<C-Space>"] = cmp.mapping.complete(),
+--     ['<Tab>'] = nil,
+--     ['<S-Tab>'] = nil,
+--   }),
+--   sources = cmp.config.sources({
+--     { name = 'buffer' }, -- text within current buffer
+--     { name = 'nvim_lsp' },
+--     -- { name = 'vsnip' }, -- For vsnip users.
+--     { name = 'luasnip' }, -- For luasnip users.
+--     { name = "path" },    -- file system paths
+--     -- { name = 'ultisnips' }, -- For ultisnips users.
+--     -- { name = 'snippy' }, -- For snippy users.
+--   }),
+-- })
